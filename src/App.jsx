@@ -73,7 +73,69 @@ function App() {
     setStep(s => s - 1);
   };
 
-  const handleSubmit = async () => {
+ const handleSubmit = async () => {
+  setIsSubmitting(true);
+  try {
+    // Preparar os dados para envio
+    const dataToSend = {
+      dadosPessoais: {
+        nome: formData.name,
+        dataNascimento: formData.birthDate,
+        genero: formData.gender === 'male' ? 'Homem' : 
+                formData.gender === 'female' ? 'Mulher' : 'Outro'
+      },
+      cartaEscolhida: formData.selectedCard,
+      nivelRelatorio: formData.level === 'basic' ? 'Básico - Gratuito' :
+                      formData.level === 'intermediate' ? 'Intermediário - 4 dólares' :
+                      'Avançado - 12 dólares',
+      contato: {
+        pais: formData.country === 'BR' ? 'Brasil' :
+              formData.country === 'PT' ? 'Portugal' :
+              formData.country === 'AR' ? 'Argentina' : '',
+        telefone: formData.phone,
+        email: formData.email
+      },
+      dataEnvio: new Date().toISOString(),
+    };
+
+    console.log('Tentando enviar dados:', dataToSend); // Debug
+
+    // Enviar para o webhook
+    const response = await fetch('https://webhook.site/de3b214d-cfae-4d25-9b30-d648d182d509', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Access-Control-Allow-Origin': '*'
+      },
+      mode: 'cors',
+      body: JSON.stringify(dataToSend)
+    });
+
+    console.log('Resposta recebida:', response); // Debug
+
+    if (!response.ok) {
+      throw new Error(`Erro ao enviar dados: ${response.status} - ${response.statusText}`);
+    }
+
+    const responseData = await response.text();
+    console.log('Dados da resposta:', responseData); // Debug
+
+    // Simular processamento adicional
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    setResultUrl('https://example.com/your-card');
+    
+    // Limpar dados do localStorage
+    localStorage.removeItem('kabbalisticFormData');
+    localStorage.removeItem('kabbalisticFormStep');
+
+  } catch (error) {
+    console.error('Erro detalhado:', error); // Debug
+    alert(`Houve um erro ao enviar os dados: ${error.message}`);
+  } finally {
+    setIsSubmitting(false);
+  }
+};
     setIsSubmitting(true);
     try {
       // Preparar os dados para envio
@@ -99,36 +161,67 @@ function App() {
       };
 
       // Enviar para o webhook
-      const response = await fetch('https://webhook.site/de3b214d-cfae-4d25-9b30-d648d182d509', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(dataToSend)
-      });
+      const handleSubmit = async () => {
+  setIsSubmitting(true);
+  try {
+    // Preparar os dados para envio
+    const dataToSend = {
+      dadosPessoais: {
+        nome: formData.name,
+        dataNascimento: formData.birthDate,
+        genero: formData.gender === 'male' ? 'Homem' : 
+                formData.gender === 'female' ? 'Mulher' : 'Outro'
+      },
+      cartaEscolhida: formData.selectedCard,
+      nivelRelatorio: formData.level === 'basic' ? 'Básico - Gratuito' :
+                      formData.level === 'intermediate' ? 'Intermediário - 4 dólares' :
+                      'Avançado - 12 dólares',
+      contato: {
+        pais: formData.country === 'BR' ? 'Brasil' :
+              formData.country === 'PT' ? 'Portugal' :
+              formData.country === 'AR' ? 'Argentina' : '',
+        telefone: formData.phone,
+        email: formData.email
+      },
+      dataEnvio: new Date().toISOString(),
+    };
 
-      if (!response.ok) {
-        throw new Error('Erro ao enviar dados');
-      }
-     // Se chegou aqui, significa que a resposta está ok
-     const responseData = await response.text();
-     console.log('Resposta do webhook:', responseData); // Debug
+    // Enviar para o webhook
+    const response = await fetch('https://webhook.site/de3b214d-cfae-4d25-9b30-d648d182d509', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Access-Control-Allow-Origin': '*'
+      },
+      mode: 'cors',
+      body: JSON.stringify(dataToSend)
+    });
 
-      // Simular processamento adicional
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      setResultUrl('https://example.com/your-card');
-      
-      // Limpar dados do localStorage
-      localStorage.removeItem('kabbalisticFormData');
-      localStorage.removeItem('kabbalisticFormStep');
+    console.log('Resposta recebida:', response); // Debug
 
-    } catch (error) {
-      console.error('Erro:', error);
-      alert('Houve um erro ao enviar os dados. Por favor, tente novamente.');
-    } finally {
-      setIsSubmitting(false);
+    if (!response.ok) {
+      throw new Error(`Erro ao enviar dados: ${response.status} - ${response.statusText}`);
     }
-  };
+
+    const responseData = await response.text();
+    console.log('Dados da resposta:', responseData); // Debug
+
+    // Simular processamento adicional
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    setResultUrl('https://example.com/your-card');
+    
+    // Limpar dados do localStorage
+    localStorage.removeItem('kabbalisticFormData');
+    localStorage.removeItem('kabbalisticFormStep');
+
+  } catch (error) {
+    console.error('Erro detalhado:', error); // Debug
+    alert(`Houve um erro ao enviar os dados: ${error.message}`);
+  } finally {
+    setIsSubmitting(false);
+  }
+};
 
   function renderStep() {
     switch (step) {
