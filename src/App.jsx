@@ -102,7 +102,7 @@ function App() {
       const response = await fetch('https://webhook.site/de3b214d-cfae-4d25-9b30-d648d182d509', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify(dataToSend)
       });
@@ -110,6 +110,9 @@ function App() {
       if (!response.ok) {
         throw new Error('Erro ao enviar dados');
       }
+     // Se chegou aqui, significa que a resposta está ok
+     const responseData = await response.text();
+     console.log('Resposta do webhook:', responseData); // Debug
 
       // Simular processamento adicional
       await new Promise(resolve => setTimeout(resolve, 2000));
